@@ -1,32 +1,24 @@
-# This is a sample Python script.
+# tutorial we followed - #https://www.edureka.co/blog/snake-game-with-pygame/#screen
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-#https://www.edureka.co/blog/snake-game-with-pygame/#screen
 
 import pygame
-import time
 import random
 pygame.init()
 
 # display
+title = pygame.image.load('Title Screen.png')
+rules = pygame.image.load('rules.png')
+
+
+
 dis = pygame.display.set_mode((400, 300))
 pygame.display.update()
 pygame.display.set_caption('The Great Snake Game')
 background = pygame.image.load('grid background.png')
-dis.blit(background, (0, 0))
+#dis.blit(title, (0, 0))
 ending = pygame.image.load('ending.png')
 clock = pygame.time.Clock()
 
-#randomize a number 8-10,
-#set a loop to count each point until it reaches said random value
-#once the powerup is placed out (on the food so it still grabs a point), reset the loop to zero and randomize the value again
-#figure out how long to make the snake slow down for (clock speed type shit idfk)
-
-#OR
-
-#extra points :))
 
 # snake
 snakeHead = pygame.image.load('snake head.png')
@@ -34,6 +26,7 @@ snakeBody = pygame.image.load('snake body.png')
 
 # variables
 game_over = False
+ruledis = False
 x = (400 * 0.45)
 y = (300 * 0.8)
 blue = (255,95,31)
@@ -41,14 +34,22 @@ black = (0, 0, 0)
 red = (255, 0, 0)
 green = (0, 255, 0)
 
-
-
-
-
+# score
 score_font = pygame.font.SysFont("Times", 20)
 
 
 # methods
+
+dis.blit(title, (0,0))
+pygame.display.update()
+pygame.event.pump() #http://stackoverflow.com/questions/18839039/how-to-wait-some-time-in-pygame
+pygame.time.delay(5000)
+dis.blit(rules, (0,0))
+pygame.display.update()
+pygame.event.pump()
+pygame.time.delay(5000)
+
+
 def score(points):
     value = score_font.render("Your Score: " + str(points), True, red)
     dis.blit(value, [3, 7])
@@ -65,6 +66,9 @@ def body(s_list):
         pygame.draw.rect(dis, green, [x[0], x[1], 10, 10])
 
 
+
+
+# game
 def loop():
     game_over = False
     exit = False
@@ -81,15 +85,16 @@ def loop():
     food_x = round(random.randrange(0, 290) / 10.0) * 10.0
     food_y = round(random.randrange(30, 290) / 10.0) * 10.0
 
-    #power_rand = round(random.randrange(8, 11))
-    power_rand = 2
+    power_rand = round(random.randrange(8, 11))
     print(power_rand)
     counter = 0
 
     powerup_onscreen = False
     snake_speed = 15
 
-    # game
+    runs = 0
+
+
     while not game_over:
 
         while exit == True:
@@ -105,6 +110,7 @@ def loop():
                         exit = False
                     if event.key == pygame.K_p:
                         loop()
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -122,6 +128,7 @@ def loop():
                 elif event.key == pygame.K_DOWN:
                     y1_change = 10
                     x1_change = 0
+
         if x1 >= 400 or x1 < 0 or y1 >= 300 or y1 < 30:
             exit = True
 
@@ -165,11 +172,18 @@ def loop():
             food_y = round(random.randrange(30, 290) / 10.0) * 10.0
             if powerup_onscreen:
                 snake_speed = 10
-                print(snake_speed)
+                print("slow", snake_speed)
+                powerup_onscreen = False
                 power_rand = round(random.randrange(8, 11))
                 counter = 0
+            if runs == 5:
+                snake_speed = 15
+                print("fast", snake_speed)
+                runs = 0
 
 
+            runs = runs + 1
+            print(runs)
         clock.tick(snake_speed)
 
 
@@ -177,8 +191,6 @@ def loop():
     #while not game_over:
     pygame.quit()
     quit()
+
+
 loop()
-
-
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
